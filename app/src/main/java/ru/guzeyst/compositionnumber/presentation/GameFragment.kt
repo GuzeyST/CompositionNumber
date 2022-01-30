@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModelProvider
 import ru.guzeyst.compositionnumber.R
 import ru.guzeyst.compositionnumber.databinding.FragmentGameBinding
 import ru.guzeyst.compositionnumber.domain.entity.GameResult
@@ -17,12 +19,22 @@ class GameFragment : Fragment() {
     private val binding: FragmentGameBinding
         get() = _binding ?: throw RuntimeException("FragmentGameBinding is NULL")
     private lateinit var level: Level
+    private val viewModel by lazy {
+        ViewModelProvider(
+            this
+        )[GameViewModel::class.java]
+    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentGameBinding.inflate(inflater, container, false)
+        viewModel.startGame(level)
+        viewModel.minPercent.observe(viewLifecycleOwner, {
+            binding.tvLeftNumber.text = "fhh"
+        })
         return binding.root
     }
 
@@ -58,7 +70,6 @@ class GameFragment : Fragment() {
             )
             .commit()
     }
-
 
     override fun onDestroy() {
         super.onDestroy()
